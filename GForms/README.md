@@ -1,3 +1,50 @@
+# ¿Cómo implementar el juego?
+
+## 1.- Creación de una hoja de cálculo de Google 
+
+Tienes que tener una cuenta de correo de Google válida (normalmente @gmail.com) y una vez tengas la sesión abierta tienes que visitar [Google Drive](https://drive.google.com)
+
+Pulsa sobre el botón "Nuevo" y selecciona "Hoja de Calculo de Google".
+
+![Nueva Spreadsheet](./img/Nuevo.png)
+
+Una vez la tengas tienes que pinchar sobre "Archivo" --> "Importar" y hay que seleccionar la opción "Subir"
+
+![Importar/Subir](./img/Importar-Subir.png)
+
+Importante que cuando vayamos a importar le demos a la selección de Reemplazar hoja para que nos importe el fichero perfectamente
+
+![Importar/Subir](./img/Importar-Reemplazar.png)
+
+## 2.- Creación del formulario
+
+Nos iremos otra vez a [Google Drive](https://drive.google.com) en una pestaña nueva.
+
+![Nuevo Formulario](./img/Nuevo-Form.png)
+
+Le ponemos el nombre que queramos al formulario, recomendación poner un nombre que nos ayude por ejemplo **El Espía que se perdió**
+
+Vamos a crear un formulario con únicamente 1 repuesta y con un mensaje para que no se nos olvide que hay que incluir siempre los emails de todos los jugadores (incluido el GameMaster). Deberías tener algo así
+
+![Formulario-Pregunta](./img/Form-Respuesta.png)
+
+Marcaremos la pregunta como obligatoria y le añadiremos la validación de tipo Expresión regular con el siguiente valor:
+
+```regex
+^(\S+@(\S+\.\S+))(\n\S+@(\S+\.\S+))*$
+```
+
+Esto verificará que cada email introducido es válido y está en una linea diferente.
+
+Una vez esto esté completado le daremos a los 3 puntos verticales de arriba a la derecha y pulsaremos sobre "Editor de secuencia de comandos"
+
+![Formulario-Pregunta](./img/Form-Comandos.png)
+
+## 3.- El código Google App Script
+
+Ahora estaremos en otra pestaña direferente en la que estaremos viendo un editor de código en Javascript, aquí deberemos pegar lo que está en el fichero Código.gs
+
+```javascript
 const subject = "Abre este email y descubre tu secreto para esta partida";
 const sender = "EMAIL_DE_ENVIO"; // Usar solo si tienes un alias válido desde tu usuario de GSuite
 const nameFrom = "Agencia Secreta"; 
@@ -19,7 +66,7 @@ function onSubmit(e) {
   nexters = shuffleArray(jugadores);
   Logger.log("Jugadores agitados: " + jugadores);
 
-  let ssWebApp = SpreadsheetApp.openById(getFileByUrl("URL_HOJA_GOOGLE_SPREADSHEETS"));
+  let ssWebApp = SpreadsheetApp.openById("IDENTIFICADOR_HOJA_GOOGLE_SPREADSHEETS");
   let workSheet = ssWebApp.getSheetByName("Personajes y Escenarios");
 
   // Obtenemos los escenarios
@@ -37,16 +84,12 @@ function onSubmit(e) {
 
   Logger.log("Escenario: " + tabla[escenario_num][0]);
   Logger.log("Url de la imagen del escenario: " + escenario_imagen);
-
-  restoHtmlBody = HtmlService.createHtmlOutputFromFile("jugadores_email_body").getContent();
   
   for (var i = 0; i < jugadores.length; i++){
     if (i == 0){ //Esto quiere decir que es el esía y por tanto no debe conocer el escenario
 
       // Para verificar que todo funciona puedes usar esta salida en el log, pero no lo uses para hacer trampas ya qu entonces perderá la gracia
       Logger.log("El jugador con el email '" + jugadores[i] + "' es el espía");
-
-      espiaHtmlBody = HtmlService.createHtmlOutputFromFile("espia_email_body").getContent();
 
       advancedOpts.htmlBody = espiaHtmlBody
       GmailApp.sendEmail(jugadores[i], subject, espiaBody, advancedOpts);
@@ -75,6 +118,27 @@ function onSubmit(e) {
 function shuffleArray(array){
   return array.sort((a, b) => 0.5 - Math.random());;
 }
+```
 
-// Función auxiliar para ayudar a obtener el identificador del archivo
-function getFileByUrl(url){ return url.match(/[-\w]{25,}/); }
+Una vez esté el código tendrás que ir a la pestaña donde tenías la hoja de cálculo del paso 1 y coger el identificador del archivo. Este identificador es parte de su URL. Ejemplo
+```
+https://docs.google.com/spreadsheets/d/1uklxKrE8JEJJYqwfskE7FwL8ct_q7p1aA9EdcWL1Es0/edit#gid=1697546335
+```
+
+Este fichero tiene el siguiente ID:
+```javascript
+1uklxKrE8JEJJYqwfskE7FwL8ct_q7p1aA9EdcWL1Es0
+```
+Es básicamente lo que está entre **/d/** y **/edit** dentro de la URL. Este ID lo pondremos en donde está la línea:
+```javascript
+  let ssWebApp = SpreadsheetApp.openById("IDENTIFICADOR_HOJA_GOOGLE_SPREADSHEETS");
+```
+Quedando de la siguiente manera:
+```javascript
+  let ssWebApp = SpreadsheetApp.openById("1uklxKrE8JEJJYqwfskE7FwL8ct_q7p1aA9EdcWL1Es0");
+```
+
+## 4.- Ficheros HTML
+
+Tendremos que crear 2 ficheros HTML **espia_email_body.html** y **jugador_email_body**.
+
