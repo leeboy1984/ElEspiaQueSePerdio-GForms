@@ -66,7 +66,7 @@ function onSubmit(e) {
   nexters = shuffleArray(jugadores);
   Logger.log("Jugadores agitados: " + jugadores);
 
-  let ssWebApp = SpreadsheetApp.openById("IDENTIFICADOR_HOJA_GOOGLE_SPREADSHEETS");
+  let ssWebApp = SpreadsheetApp.openById(getFileByUrl("URL_HOJA_GOOGLE_SPREADSHEETS"));
   let workSheet = ssWebApp.getSheetByName("Personajes y Escenarios");
 
   // Obtenemos los escenarios
@@ -118,6 +118,9 @@ function onSubmit(e) {
 function shuffleArray(array){
   return array.sort((a, b) => 0.5 - Math.random());;
 }
+
+// Función auxiliar para ayudar a obtener el identificador del archivo
+function getFileByUrl(url){ return url.match(/[-\w]{25,}/); }
 ```
 
 Una vez esté el código tendrás que ir a la pestaña donde tenías la hoja de cálculo del paso 1 y coger el identificador del archivo. Este identificador es parte de su URL. Ejemplo
@@ -141,4 +144,6 @@ Quedando de la siguiente manera:
 ## 4.- Ficheros HTML
 
 Tendremos que crear 2 ficheros HTML **espia_email_body.html** y **jugador_email_body**.
+
+Deberemos incluir el contenido de estos ficheros en los respectivos que hayamos creado
 
