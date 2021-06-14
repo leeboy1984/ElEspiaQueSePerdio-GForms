@@ -55,13 +55,14 @@ function onSubmit(e) {
       // Para verificar que todo funciona puedes usar esta salida en el log, pero no lo uses para hacer trampas ya qu entonces perderá la gracia
       Logger.log("El jugador '" + jugadores[i] + "' ha obtenido el rol '" + personajes [i] + "', por tanto aquí tienes tu ubicación: '" + escenario + "' y por si no sabes nada de él además aquí tienes una foto: '" + escenario_imagen + "'.");
       var tmpRestoHtmlBody = restoHtmlBody;
-      tmpRestoHtmlBody = tmpRestoHtmlBody.replaceAll('ROL_PERSONAJE', personajes [i]);
-      tmpRestoHtmlBody = tmpRestoHtmlBody.replaceAll('ESCENARIO_ASIGNADO', escenario);
-      tmpRestoHtmlBody = tmpRestoHtmlBody.replaceAll('ESCENARIO_IMG_SRC', escenario_imagen);
+      tmpRestoHtmlBody = tmpRestoHtmlBody.replace('ROL_PERSONAJE_2', personajes [i]);
+      tmpRestoHtmlBody = tmpRestoHtmlBody.replace('ROL_PERSONAJE', personajes [i]);
+      tmpRestoHtmlBody = tmpRestoHtmlBody.replace('ESCENARIO_ASIGNADO', escenario);
+      tmpRestoHtmlBody = tmpRestoHtmlBody.replace('ESCENARIO_IMG_SRC', escenario_imagen);
       
-      restoBody = espiaBody.replaceAll('ROL_PERSONAJE', personajes [i]);
-      restoBody = espiaBody.replaceAll('ESCENARIO_ASIGNADO', escenario);
-      restoBody = espiaBody.replaceAll('ESCENARIO_IMG_SRC', escenario_imagen);
+      restoBody = espiaBody.replace('ROL_PERSONAJE', personajes [i]);
+      restoBody = espiaBody.replace('ESCENARIO_ASIGNADO', escenario);
+      restoBody = espiaBody.replace('ESCENARIO_IMG_SRC', escenario_imagen);
       
       // Actualizamos el cuerpo del email. Aquí hacemos un envío a cada jugador
       advancedOpts.htmlBody = tmpRestoHtmlBody;
