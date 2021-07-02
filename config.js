@@ -1,5 +1,5 @@
 module.exports = {
-  siteTitle: 'El Espía que se perdió | Versión GForms', // <title>
+  siteTitle: 'El Ninja que se perdió | Versión GForms', // <title>
   manifestName: 'Espía que se perdió',
   manifestShortName: 'Espía', // max 12 characters
   manifestStartUrl: '/',
